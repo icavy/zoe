@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cavy.zoe.mapper.TagMapper">
+	<resultMap id="TagResult" type="Tag">
+		<result column="ID" property="id" jdbcType="BIGINT" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />		
+	</resultMap>
+
+	<select id="findAll" resultMap="TagResult">
+		select * from doc_tag
+	</select>
+	
+	<select id="findTagIdByJournalId" resultType="long">
+		select tag_id from doc_tag_journal t where t.journal_id = #{journalId}
+	</select>
+	
+	<insert id="save" parameterType="Tag">
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		insert into doc_tag <trim prefix="(" suffixOverrides="," suffix=")"> 
+			name
+		</trim> values <trim prefix="(" suffixOverrides="," suffix=")">
+			#{name}
+		</trim>
+	</insert>
+	
+	<insert id="relate">
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		insert into doc_tag_journal <trim prefix="(" suffixOverrides="," suffix=")"> 
+			tag_id, journal_id
+		</trim> select <trim prefix="" suffixOverrides="," suffix="">
+			#{tagId}, #{journalId}
+		</trim> FROM dual WHERE not exists (select id from doc_tag_journal d where d.tag_id = #{tagId} and d.journal_id = #{journalId});
+	</insert>
+</mapper>

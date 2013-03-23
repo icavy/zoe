@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cavy.zoe.mapper.JournalMapper">
+	<resultMap id="JournalResult" type="Journal">
+		<result column="ID" property="id" jdbcType="BIGINT" />
+		<result column="TITLE" property="title" jdbcType="VARCHAR" />
+		<result column="PATH" property="path" jdbcType="VARCHAR" />
+		<result column="SUMMARY" property="summary" jdbcType="VARCHAR"/>
+		<result column="CONTENT" property="content" jdbcType="VARCHAR" />
+		<result column="COMMENT_NUM" property="commentNum" jdbcType="BIGINT" />
+		<result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="LAST_UPDATE" property="lastUpdate" jdbcType="TIMESTAMP" />
+		<result column="CATEGORY_ID" property="categoryId" jdbcType="BIGINT" />
+	</resultMap>
+
+	<sql id="field">t.id, t.title, t.summary, t.content, t.comment_num, t.path, t.create_date,
+		t.last_update, t.category_id</sql>
+
+	<sql id="selective">
+		select
+		<include refid="field" />
+		from doc_journal t
+	</sql>
+
+	<sql id="conditions">
+		<if test="id != null"> and t.id = #{id}</if>
+		<if test="parentId != null"> and t.parent_id = #{parentId}</if>
+		<if test="name != null"> and t.name = #{name}</if>
+	</sql>
+
+	<select id="getCount" resultType="int">
+		select count(id) from
+		doc_journal
+	</select>
+
+	<select id="findIndexJournal" resultMap="JournalResult">
+		select t.id, t.title,
+		t.path, t.summary, t.content, t.comment_num, t.create_date, t.last_update,
+		t.category_id from
+		doc_journal t limit #{offset} ,#{length}
+	</select>
+
+	<select id="getByPath" resultMap="JournalResult">
+		select t.id, t.title,
+		t.path, t.summary, t.content, t.comment_num, t.create_date, t.last_update,
+		t.category_id from
+		doc_journal t where t.path = #{path} limit 0 ,1
+	</select>
+
+	<select id="findByCatPath" resultMap="JournalResult">
+		select t.id, t.title,
+		t.path, t.summary, t.content, t.comment_num, t.create_date, t.last_update,
+		t.category_id from
+		doc_journal t,doc_category c where c.path = #{catPath} and c.id = t.category_id limit #{offset} ,#{length}
+	</select>
+	
+	<select id="findByTagName" resultMap="JournalResult">
+		select t.id, t.title,
+		t.path, t.summary, t.content, t.comment_num, t.create_date, t.last_update,
+		t.category_id from
+		doc_journal t,doc_tag dc,doc_tag_journal dtj where dc.name = #{tagName} and dc.id = dtj.tag_id and t.id = dtj.journal_id limit #{offset} ,#{length}
+	</select>
+	
+	<insert id="save" parameterType="Journal">
+		<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		insert into doc_journal <trim prefix="(" suffixOverrides="," suffix=")"> 
+			title, path, summary, content, create_date, category_id
+		</trim> values <trim prefix="(" suffixOverrides="," suffix=")">
+			#{title}, #{path}, #{summary}, #{content}, #{createDate}, #{categoryId}
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="Journal" flushCache="true">		
+		update doc_journal set title = #{title}, path = #{path}, summary = #{summary}, content = #{content}, create_date = #{createDate}, category_id = #{categoryId} where id = #{id}
+	</update>
+</mapper>

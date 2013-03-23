@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="cn.cavy.zoe.entity.Category" alias="Category" />
+		<typeAlias type="cn.cavy.zoe.entity.Config" alias="Config" />
+		<typeAlias type="cn.cavy.zoe.entity.Journal" alias="Journal" />
+		<typeAlias type="cn.cavy.zoe.entity.Menu" alias="Menu" />
+		<typeAlias type="cn.cavy.zoe.entity.Tag" alias="Tag" />
+		<typeAlias type="cn.cavy.zoe.filter.MenuFilter" alias="MenuFilter" />
+		<typeAlias type="cn.cavy.zoe.entity.User" alias="User" />
+		<typeAlias type="cn.cavy.zoe.entity.Permission" alias="Permission" />
+	</typeAliases>
+</configuration>
