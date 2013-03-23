@@ -89,8 +89,4 @@ public class JournalAction extends PageAction {
 
         return "admin/journalList";
     }
-    
-    @RequestMapping(value = "/imageUpload")
-    public void imageUpload(Model model, HttpServletRequest request) {
-    }
 }

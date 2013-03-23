@@ -15,8 +15,6 @@
         http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
-	<!-- DAO 相关配置 -->
-	<!-- 定义jdbc配置信息路径 -->
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="ignoreResourceNotFound" value="true" />
@@ -27,7 +25,6 @@
 			</list>
 		</property>
 	</bean>
-	<util:properties id="configProperties" location="classpath:config.properties" />
 
 	<!-- 激活spring的注解. -->
 	<context:component-scan base-package="cn.cavy.zoe.*">
@@ -160,9 +157,9 @@
 		</property>
 		<property name="filterChainDefinitions">
 			<value>
-				/admin/**=authc 
-				/login/**=anon 
-				/resource/**=anon 
+				/admin/**=authc
+				/login/**=anon
+				/resource/**=anon
 				/skins/**=anon
 			</value>
 		</property>
