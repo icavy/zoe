@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import cn.cavy.common.util.DataPage;
 import cn.cavy.zoe.entity.Journal;
+import cn.cavy.zoe.filter.JournalFilter;
 import cn.cavy.zoe.mapper.JournalMapper;
 import cn.cavy.zoe.service.CategoryService;
 import cn.cavy.zoe.service.JournalService;
@@ -31,7 +32,7 @@ public class JournalServiceImpl implements JournalService {
     TagService tagService;
 
     public DataPage<Journal> findIndexJournal(int pageIndex, int pageSize) {
-        int journalCount = journalMapper.getCount();
+        int journalCount = journalMapper.getCount(new JournalFilter());
 
         int offset = (pageIndex - 1) * pageSize;
 
@@ -52,7 +53,7 @@ public class JournalServiceImpl implements JournalService {
     }
 
     public DataPage<Journal> getJournalByCatPath(String catPath, Integer pageIndex, Integer pageSize) {
-        int journalCount = journalMapper.getCount();
+        int journalCount = journalMapper.getCount(new JournalFilter());
 
         int offset = (pageIndex - 1) * pageSize;
 
@@ -72,7 +73,7 @@ public class JournalServiceImpl implements JournalService {
     }
 
     public DataPage<Journal> getJournalByTagName(String tagName, Integer pageIndex, Integer pageSize) {
-        int journalCount = journalMapper.getCount();
+        int journalCount = journalMapper.getCount(new JournalFilter());
 
         int offset = (pageIndex - 1) * pageSize;
 
@@ -93,5 +94,19 @@ public class JournalServiceImpl implements JournalService {
             journalMapper.update(journal);
 
         tagService.create(tagStr, journal.getId());
+    }
+
+    public DataPage<Journal> findIndexJournal(JournalFilter journalFilter, Integer pageIndex, Integer pageSize) {
+
+        int offset = (pageIndex - 1) * pageSize;
+
+        int journalCount = journalMapper.getCount(journalFilter);
+
+        List<Journal> journals = journalMapper.findByFilter(journalFilter, offset, pageSize);
+        for (Journal journal : journals) {
+            setLinked(journal);
+        }
+
+        return new DataPage<Journal>(journalCount, pageIndex, pageSize, journals);
     }
 }

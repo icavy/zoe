@@ -13,8 +13,7 @@
 		<result column="CATEGORY_ID" property="categoryId" jdbcType="BIGINT" />
 	</resultMap>
 
-	<sql id="field">t.id, t.title, t.summary, t.content, t.comment_num, t.path, t.create_date,
-		t.last_update, t.category_id</sql>
+	<sql id="field">t.id, t.title, t.summary, t.content, t.comment_num, t.path, t.create_date, t.last_update, t.category_id</sql>
 
 	<sql id="selective">
 		select
@@ -22,16 +21,14 @@
 		from doc_journal t
 	</sql>
 
-	<sql id="conditions">
-		<if test="id != null"> and t.id = #{id}</if>
-		<if test="parentId != null"> and t.parent_id = #{parentId}</if>
-		<if test="name != null"> and t.name = #{name}</if>
+	<sql id="count">
+		select count(id) from doc_journal t
 	</sql>
 
-	<select id="getCount" resultType="int">
-		select count(id) from
-		doc_journal
-	</select>
+	<sql id="filterConditions">
+		<if test="filter.categoryId != 0 and filter.categoryId != null"> and t.CATEGORY_ID = #{filter.categoryId}</if>
+		<if test="filter.title != '' and filter.title != null"> and t.title like #{filter.title}</if>
+	</sql>
 
 	<select id="findIndexJournal" resultMap="JournalResult">
 		select t.id, t.title,
@@ -75,4 +72,18 @@
 	<update id="update" parameterType="Journal" flushCache="true">		
 		update doc_journal set title = #{title}, path = #{path}, summary = #{summary}, content = #{content}, create_date = #{createDate}, category_id = #{categoryId} where id = #{id}
 	</update>
+
+	<select id="findByFilter" resultMap="JournalResult">
+		<include refid="selective" />
+		<where>
+			<include refid="filterConditions" />
+		</where>
+		limit #{offset} ,#{length}
+	</select>
+	<select id="getCount" resultType="int">
+		<include refid="count" />
+		<where>
+			<include refid="filterConditions" />
+		</where>
+	</select>
 </mapper>

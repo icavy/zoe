@@ -28,7 +28,11 @@
               		<div class="controls">
                 		<select id="categoryId" name="categoryId">
 							<#list categories as category>
-							<option value="${category.id}">${category.name}</option>
+								<#if category.id=journal.categoryId>
+									<option value="${category.id}" selected='true'>${category.name}</option>								    
+								 <#else>
+									<option value="${category.id}">${category.name}</option>	   	
+								 </#if>
 							</#list>
 						</select>
               		</div>

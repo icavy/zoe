@@ -17,6 +17,7 @@ import cn.cavy.common.util.DataPage;
 import cn.cavy.zoe.action.PageAction;
 import cn.cavy.zoe.entity.Category;
 import cn.cavy.zoe.entity.Journal;
+import cn.cavy.zoe.filter.JournalFilter;
 import cn.cavy.zoe.service.CategoryService;
 import cn.cavy.zoe.service.JournalService;
 import cn.cavy.zoe.service.TagService;
@@ -80,13 +81,14 @@ public class JournalAction extends PageAction {
         return this.list(model, request);
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public String search(Model model) {
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public String search(Model model, HttpServletRequest request, JournalFilter journalFilter) {
+        DataPage<Journal> journals = journalService.findIndexJournal(journalFilter, getPageIndex(request),
+                getPageSize(request));
+        model.addAttribute("journals", journals);
+
         List<Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
-
-        model.addAttribute("journal", new Journal());
-
         return "admin/journalList";
     }
 }

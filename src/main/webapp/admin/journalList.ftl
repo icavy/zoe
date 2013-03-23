@@ -9,12 +9,12 @@
 			<div class="row">
 				<div class="span12">
 					<h2>日志</h2>
-					<form class="form-inline" method="post" action="<@util.url relativeUrl='/admin/journal/query' />">
+					<form class="form-inline" method="post" action="<@util.url relativeUrl='/admin/journal/search' />">
 						<div class="row-fluid">
 							<div class="span8">							
-								 <input type="text" >
-								 <select class="input-small">
-									<option>查看所有分类目录</option>
+								 <input name="title" type="text" >
+								 <select name="categoryId" class="input-small">
+									<option value="0">查看所有分类目录</option>
 									<#list categories as category>
 								  	<option value="${category.id}">${category.name}</option>
 								  	</#list>
